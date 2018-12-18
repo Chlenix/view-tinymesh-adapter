@@ -21,11 +21,13 @@ def setup_env():
 if __name__ == '__main__':
     setup_env()
 
-    tinyMeshClient = TinyMeshClient()
     viewClient = ViewAzureClient()
+    if not viewClient.run():
+        exit(1)
 
-    viewClient.run()
+    tinyMeshClient = TinyMeshClient()
+
     for message in tinyMeshClient.subscribe():
-        viewClient.convert_and_send(message)
+        viewClient.publish(message)
 
     viewClient.stop()

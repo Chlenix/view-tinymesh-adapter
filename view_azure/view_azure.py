@@ -18,27 +18,55 @@ class ViewAzureClient:
         self.sender = None
 
     def run(self):
+        self.client = EventHubClient.from_connection_string(
+            'Endpoint=%s;SharedAccessKeyName=%s;SharedAccessKey=%s;EntityPath=%s'
+            % (config.AZURE['ENDPOINT'], self.sas_user, self.sas_key, config.AZURE['ENTITY_PATH'])
+        )
+        self.sender = self.client.add_sender(partition='0')
+
+        ran = False
+
         try:
-            self.client = EventHubClient.from_connection_string(
-                'Endpoint=%s;SharedAccessKeyName=%s;SharedAccessKey=%s;EntityPath=%s'
-                % (config.AZURE['ENDPOINT'], self.sas_user, self.sas_key, config.AZURE['ENTITY_PATH'])
-            )
-            self.sender = self.client.add_sender(partition='0')
-            self.client.run()
+            # client returns 'failed' bool
+            ran = not self.client.run()
         except:
             pass
+        finally:
+            return ran
 
     def stop(self):
-        if self.client is not None:
-            try:
-                self.client.stop()
-            except:
-                pass
+        self.client.stop()
 
-    def convert_and_send(self, message):
-
+    def publish(self, message):
         key = message['key'].split('-', 4)[-1]
-        nid, device = base64.b64decode(key).decode('ascii').split('/')
 
-        response = self.sender.send(EventData(str(message)))
-        print(response)
+        _, device_id = base64.b64decode(key).decode('ascii').split('/')
+
+        body = message['proto/tm']
+
+        for formatting_rule in config.FORMAT:
+            # prepare the lambda function which converts the raw value to unit value
+            convert_to_unit = formatting_rule['conversion_fn']
+
+            # build the event body
+            event = {
+                'deviceid': device_id,
+                'property': formatting_rule['property_name'],
+                'unit': formatting_rule['unit'],
+                'values': [],
+            }
+
+            # get the raw value recorded in the sensor
+            raw_value = body[formatting_rule['key_name']]
+
+            # convert the value to unit value
+            value = {
+                'starttime': message['received'],
+                'value': convert_to_unit(raw_value),
+            }
+
+            # append the value to the event object
+            event['values'].append(value)
+
+            # send event to Azure server
+            response = self.sender.send(EventData(str(event)))
