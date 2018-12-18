@@ -24,15 +24,8 @@ class ViewAzureClient:
         )
         self.sender = self.client.add_sender(partition='0')
 
-        ran = False
-
-        try:
-            # client returns 'failed' bool
-            ran = not self.client.run()
-        except:
-            pass
-        finally:
-            return ran
+        # client.run() returns a 'failed' boolean
+        return not self.client.run()
 
     def stop(self):
         self.client.stop()
@@ -44,7 +37,7 @@ class ViewAzureClient:
 
         body = message['proto/tm']
 
-        for formatting_rule in config.FORMAT:
+        for formatting_rule in config.FORMAT.values():
             # prepare the lambda function which converts the raw value to unit value
             convert_to_unit = formatting_rule['conversion_fn']
 
@@ -70,3 +63,4 @@ class ViewAzureClient:
 
             # send event to Azure server
             response = self.sender.send(EventData(str(event)))
+            print(device_id + ':\n\n' + response.name)
