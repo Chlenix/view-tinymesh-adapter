@@ -25,8 +25,8 @@ def setup_logging():
     log_name = '%s.log' % datetime.date.today()
     log_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), config.LOGGING['REL_LOG_DIR'])
 
-    # create log directory if not exists with read-write permissions
-    pathlib.Path(log_dir).mkdir(mode=0o666, parents=True, exist_ok=True)
+    # create log directory if not exists
+    pathlib.Path(log_dir).mkdir(parents=True, exist_ok=True)
 
     logging.basicConfig(
         filemode='a+',
