@@ -4,6 +4,7 @@ from azure.eventhub import EventHubClient, Sender, EventData
 
 import logging
 import config
+import json
 
 
 class ViewAzureClient:
@@ -37,12 +38,14 @@ class ViewAzureClient:
 
         body = message['proto/tm']
 
+        devices = []
+
         for formatting_rule in config.FORMAT.values():
             # prepare the lambda function which converts the raw value to unit value
             convert_to_unit = formatting_rule['conversion_fn']
 
-            # build the event body
-            event = {
+            # build the device body
+            device = {
                 'deviceid': device_id,
                 'property': formatting_rule['property_name'],
                 'unit': formatting_rule['unit'],
@@ -58,9 +61,13 @@ class ViewAzureClient:
                 'value': convert_to_unit(raw_value),
             }
 
-            # append the value to the event object
-            event['values'].append(value)
+            # append the value to the device object
+            device['values'].append(value)
 
-            # send event to Azure server
-            response = self.sender.send(EventData(str(event)))
-            print(device_id + ':\n\n' + response.name)
+            # add the device dict to the array of devices
+            devices.append(device)
+
+        # send devices object to Azure server
+        event = {'devices': devices}
+        response = self.sender.send(EventData(str(event)))
+        print(device_id + ':\n\n' + response.name)
