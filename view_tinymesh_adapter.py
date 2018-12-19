@@ -22,7 +22,7 @@ def setup_env():
 
 def setup_logging():
 
-    log_name = '%s.log' % datetime.date.today()
+    log_name = '%s-%s.log' % (datetime.date.today(), config.AZURE['ENTITY_PATH'])
     log_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), config.LOGGING['REL_LOG_DIR'])
 
     # create log directory if not exists

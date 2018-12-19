@@ -8,8 +8,8 @@ ENV = {
 }
 
 AZURE = {
-    'ENDPOINT': 'sb://test-view.servicebus.windows.net/',
-    'ENTITY_PATH': 'dank-single-eventhub',
+    'ENDPOINT': 'sb://invadeeh.servicebus.windows.net/',
+    'ENTITY_PATH': 'iotexternaleh',
     'PARTITION': '0',
 }
 
