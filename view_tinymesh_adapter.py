@@ -1,6 +1,7 @@
 import os
 import logging
 import config
+import datetime
 
 from tinymesh_api import TinyMeshClient
 from view_azure import ViewAzureClient
@@ -18,8 +19,25 @@ def setup_env():
             raise ValueError('%s environment variable is required but not set.' % key)
 
 
-if __name__ == '__main__':
+def setup_logging():
+
+    filename_fmt = '%s.log' % datetime.date.today()
+
+    logging.basicConfig(
+        filemode='a+',
+        filename=os.path.join(os.path.dirname(os.path.abspath(__file__)), config.LOGGING['REL_LOG_DIR'], filename_fmt),
+        format=config.LOGGING['FORMAT'],
+        level=config.LOGGING['LEVEL'],
+    )
+
+
+def setup():
+    setup_logging()
     setup_env()
+
+
+if __name__ == '__main__':
+    setup()
 
     tinymesh_client = TinyMeshClient()
 
@@ -31,7 +49,7 @@ if __name__ == '__main__':
         for message in tinymesh_client.subscribe():
             view_client.publish(message)
     except KeyboardInterrupt:
-        pass
+        logging.warning('Keyboard interrupt received. Stopping...')
     finally:
         view_client.stop()
 

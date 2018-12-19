@@ -1,11 +1,15 @@
+import logging
+
 AZURE = {
     'ENDPOINT': 'sb://test-view.servicebus.windows.net/',
     'ENTITY_PATH': 'dank-single-eventhub',
+    'PARTITION': '0',
 }
 
 TINYM = {
     'BASE_URL': 'https://cloud.tiny-mesh.com',
     'API_VERSION': 'v2',
+    'NETWORK_ID': 'SHR',
 }
 
 FORMAT = {
@@ -27,6 +31,12 @@ FORMAT = {
         'key_name': 'msg_data',
         'conversion_fn': lambda x: x
     }
+}
+
+LOGGING = {
+    'LEVEL': logging.INFO,
+    'FORMAT': '[%(asctime)s] - (%(levelname)s): %(message)s',
+    'REL_LOG_DIR': 'logs',
 }
 
 # Not to be filled in manually.
