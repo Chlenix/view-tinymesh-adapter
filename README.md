@@ -10,7 +10,15 @@ Dependencies:
 
 Script configuration file: `config.py`
 
-### Environment Variables
+In it, fill out the following fields:
+##### Azure
+    
+    'ENDPOINT': 'sb://<YOUR-VIEW>.servicebus.windows.net/',
+    'ENTITY_PATH': '<EVENTHUB>',
+    'PARTITION': '0'
+
+##### Environment Variables
+Designed to work with environment variables, but can also be filled out directly in the config file.
 
     'AZURE_SAS_KEY':  Azure SAS key
     'AZURE_SAS_USER': Azure SAS user

@@ -10,10 +10,10 @@ from view_azure import ViewAzureClient
 
 def setup_env():
     # Environment
-    config.ENV['AZURE_SAS_KEY'] = os.environ.get('AZURE_SAS_KEY', None)
-    config.ENV['AZURE_SAS_USER'] = os.environ.get('AZURE_SAS_USER', None)
-    config.ENV['TINYM_USERNAME'] = os.environ.get('TINYM_USERNAME', None)
-    config.ENV['TINYM_PASSWORD'] = os.environ.get('TINYM_PASSWORD', None)
+    config.ENV['AZURE_SAS_KEY'] = os.environ.get('AZURE_SAS_KEY', config.ENV['AZURE_SAS_KEY'])
+    config.ENV['AZURE_SAS_USER'] = os.environ.get('AZURE_SAS_USER', config.ENV['AZURE_SAS_USER'])
+    config.ENV['TINYM_USERNAME'] = os.environ.get('TINYM_USERNAME', config.ENV['TINYM_USERNAME'])
+    config.ENV['TINYM_PASSWORD'] = os.environ.get('TINYM_PASSWORD', config.ENV['TINYM_PASSWORD'])
 
     for key, value in config.ENV.items():
         if value is None or value == '':

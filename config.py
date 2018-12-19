@@ -1,5 +1,12 @@
 import logging
 
+ENV = {
+    'AZURE_SAS_KEY': '',
+    'AZURE_SAS_USER': '',
+    'TINYM_USERNAME': '',
+    'TINYM_PASSWORD': '',
+}
+
 AZURE = {
     'ENDPOINT': 'sb://test-view.servicebus.windows.net/',
     'ENTITY_PATH': 'dank-single-eventhub',
@@ -37,13 +44,4 @@ LOGGING = {
     'LEVEL': logging.INFO,
     'FORMAT': '[%(asctime)s] - (%(levelname)s): %(message)s',
     'REL_LOG_DIR': 'logs',
-}
-
-# Not to be filled in manually.
-# Use Environment Variables with the same key names
-ENV = {
-    'AZURE_SAS_KEY': '',
-    'AZURE_SAS_USER': '',
-    'TINYM_USERNAME': '',
-    'TINYM_PASSWORD': '',
 }
