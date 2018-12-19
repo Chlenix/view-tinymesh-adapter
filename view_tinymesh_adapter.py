@@ -1,4 +1,5 @@
 import os
+import pathlib
 import logging
 import config
 import datetime
@@ -21,11 +22,15 @@ def setup_env():
 
 def setup_logging():
 
-    filename_fmt = '%s.log' % datetime.date.today()
+    log_name = '%s.log' % datetime.date.today()
+    log_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), config.LOGGING['REL_LOG_DIR'])
+
+    # create log directory if not exists with read-write permissions
+    pathlib.Path(log_dir).mkdir(mode=0o666, parents=True, exist_ok=True)
 
     logging.basicConfig(
         filemode='a+',
-        filename=os.path.join(os.path.dirname(os.path.abspath(__file__)), config.LOGGING['REL_LOG_DIR'], filename_fmt),
+        filename=os.path.join(log_dir, log_name),
         format=config.LOGGING['FORMAT'],
         level=config.LOGGING['LEVEL'],
     )
