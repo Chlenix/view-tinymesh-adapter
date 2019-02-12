@@ -26,7 +26,7 @@ def setup_logging():
     log_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), config.LOGGING['REL_LOG_DIR'])
 
     # create log directory if not exists
-    pathlib.Path(log_dir).mkdir(parents=True, exist_ok=True)
+    # pathlib.Path(log_dir).mkdir(parents=True, exist_ok=True)
 
     logging.basicConfig(
         filemode='a+',
@@ -55,6 +55,8 @@ if __name__ == '__main__':
             view_client.publish(message)
     except KeyboardInterrupt:
         logging.warning('Keyboard interrupt received. Stopping...')
+    except:
+        logging.warning('Unexpected error has occurred...')
     finally:
         view_client.stop()
 

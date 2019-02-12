@@ -96,6 +96,8 @@ class ViewAzureClient:
                      device_id, self.ENTITY_PATH, len(event_message))
 
         # send devices object to Azure server
-        response = self.sender.send(EventData(event_message))
-
-        logging.info('EventHub \"%s\" responded with status %s.', self.ENTITY_PATH, response.name)
+        try:
+            response = self.sender.send(EventData(event_message))
+            logging.info('EventHub \"%s\" responded with status %s.', self.ENTITY_PATH, response.name)
+        except EventHubError as e:
+            logging.error('EventHub \"%s\" could not send. MESSAGE: %s', self.ENTITY_PATH, e.message)
