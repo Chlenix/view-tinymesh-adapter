@@ -54,6 +54,7 @@ class ViewAzureClient:
         for formatting_rule in config.FORMAT.values():
             # prepare the lambda function which converts the raw value to unit value
             convert_to_unit = formatting_rule['conversion_fn']
+            check_bad_value = formatting_rule['check_bad_fn']
 
             property_name = formatting_rule['property_name']
             unit = formatting_rule['unit']
@@ -78,9 +79,17 @@ class ViewAzureClient:
             raw_value = body[selector]
 
             # convert the value to unit value
+            parsed_value = convert_to_unit(raw_value)
+
+            # check for bad value caused by sensor failures
+            if check_bad_value(parsed_value):
+                logging.warning('Device \'%s\' received bad value \'%s\' in property \'%s\'. Property \'%s\' will therefore be skipped',
+                                device_id, str(parsed_value), property_name, property_name)
+                continue
+
             value = {
                 'starttime': message['received'],
-                'value': convert_to_unit(raw_value),
+                'value': parsed_value,
             }
 
             # append the value to the device object
